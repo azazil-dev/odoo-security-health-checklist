@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 Arif N Ramadhan (https://www.niits.id)
+    License OPL-1 (Odoo Proprietary License v1.0)
+-->
+<odoo>
+    <record id="view_shc_run_wizard_form" model="ir.ui.view">
+        <field name="name">shc.run.wizard.form</field>
+        <field name="model">shc.run.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Run healthcheck">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Run a security healthcheck</h1>
+                    </div>
+                    <field name="note" widget="html" nolabel="1"/>
+                </sheet>
+                <footer>
+                    <button name="action_run" type="object" string="Run scan" class="btn-primary" data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_shc_run_wizard" model="ir.actions.act_window">
+        <field name="name">Run healthcheck</field>
+        <field name="res_model">shc.run.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_shc_run_wizard_form"/>
+    </record>
+</odoo>

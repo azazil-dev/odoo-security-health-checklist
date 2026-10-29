@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 Arif N Ramadhan (https://www.niits.id)
+    License OPL-1 (Odoo Proprietary License v1.0)
+-->
+<odoo>
+    <record id="seq_shc_scan" model="ir.sequence">
+        <field name="name">Security Healthcheck Scan</field>
+        <field name="code">shc.scan</field>
+        <field name="prefix">SHC/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

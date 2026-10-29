@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_shc_scan,shc.scan,model_shc_scan,base.group_system,1,1,1,1
+access_shc_scan_area,shc.scan.area,model_shc_scan_area,base.group_system,1,1,1,1
+access_shc_scan_result,shc.scan.result,model_shc_scan_result,base.group_system,1,1,1,1
+access_shc_check_config,shc.check.config,model_shc_check_config,base.group_system,1,1,1,1
+access_shc_accepted_risk,shc.accepted.risk,model_shc_accepted_risk,base.group_system,1,1,1,1
+access_shc_run_wizard,shc.run.wizard,model_shc_run_wizard,base.group_system,1,1,1,1
+access_shc_accept_risk_wizard,shc.accept.risk.wizard,model_shc_accept_risk_wizard,base.group_system,1,1,1,1

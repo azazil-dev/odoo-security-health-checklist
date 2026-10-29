@@ -1,0 +1,15 @@
+/* Copyright (C) 2026 Arif N Ramadhan — OPL-1 */
+
+.shc_scan_form .shc_score {
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.shc_scan_form .shc_score_wrap {
+    padding: 12px 0 8px;
+}
+
+.shc_scan_form .shc_dashboard .o_field_badge {
+    font-size: 18px;
+}

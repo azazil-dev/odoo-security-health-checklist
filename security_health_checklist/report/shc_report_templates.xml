@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 Arif N Ramadhan (https://www.niits.id)
+    License OPL-1 (Odoo Proprietary License v1.0)
+-->
+<odoo>
+    <template id="report_shc_scan">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <t t-set="company" t-value="doc.company_id"/>
+                    <div class="page" style="font-size: 12px;">
+                        <style>
+                            .shc-grade { font-size: 28px; font-weight: 700; }
+                            .shc-bar { height: 8px; background: #e9ecef; border-radius: 4px; }
+                            .shc-bar i { display: block; height: 8px; background: #0d6efd; border-radius: 4px; }
+                            .shc-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+                            .shc-table th, .shc-table td { border-bottom: 1px solid #dee2e6; padding: 6px 8px; text-align: left; vertical-align: top; }
+                            .shc-sev-critical { color: #842029; font-weight: 700; }
+                            .shc-sev-high { color: #984c0c; font-weight: 700; }
+                            .shc-muted { color: #6c757d; }
+                        </style>
+
+                        <h2>Security Healthcheck</h2>
+                        <table class="shc-table">
+                            <tr><th>Company</th><td><t t-esc="company.name"/></td></tr>
+                            <tr><th>Database</th><td><t t-esc="doc.env.cr.dbname"/></td></tr>
+                            <tr><th>Odoo</th><td><t t-esc="doc.odoo_version"/> · <t t-esc="doc.odoo_edition"/></td></tr>
+                            <tr><th>Environment</th><td><t t-esc="doc.environment"/></td></tr>
+                            <tr><th>Scan</th><td><t t-esc="doc.name"/> · <t t-esc="doc.date"/> · <t t-esc="doc.user_id.name"/></td></tr>
+                        </table>
+
+                        <h3>Executive summary</h3>
+                        <p>
+                            Overall score
+                            <strong t-esc="'%.1f' % doc.score"/> / 100
+                            · Grade <span class="shc-grade" t-esc="doc.grade or '-'"/>
+                            <t t-if="doc.capped">
+                                <span> (grade capped at C because a critical check failed)</span>
+                            </t>
+                            <t t-if="doc.previous_scan_id">
+                                · Previous <t t-esc="'%.1f' % doc.previous_scan_id.score"/>
+                                (<t t-esc="'%+.1f' % doc.score_delta"/>)
+                            </t>
+                        </p>
+                        <p>
+                            Findings:
+                            Critical <t t-esc="doc.count_critical"/>,
+                            High <t t-esc="doc.count_high"/>,
+                            Medium <t t-esc="doc.count_medium"/>,
+                            Low <t t-esc="doc.count_low"/>.
+                        </p>
+                        <table class="shc-table">
+                            <tr>
+                                <th>Area</th>
+                                <th>Score</th>
+                                <th>Grade</th>
+                                <th>Weight</th>
+                            </tr>
+                            <t t-foreach="doc.area_score_ids" t-as="area">
+                                <tr>
+                                    <td><t t-esc="dict(area._fields['area'].selection).get(area.area)"/></td>
+                                    <td>
+                                        <t t-if="area.is_na">N/A</t>
+                                        <t t-else="">
+                                            <t t-esc="'%.1f' % area.score"/>
+                                            <div class="shc-bar">
+                                                <i t-attf-style="width: {{max(0, min(100, area.score))}}%;"/>
+                                            </div>
+                                        </t>
+                                    </td>
+                                    <td><t t-esc="area.grade or '-'"/></td>
+                                    <td><t t-esc="area.weight"/></td>
+                                </tr>
+                            </t>
+                        </table>
+
+                        <h3>Top priority actions</h3>
+                        <t t-set="top" t-value="doc.get_top_actions()"/>
+                        <t t-if="not top">
+                            <p>No failed checks.</p>
+                        </t>
+                        <ol t-else="">
+                            <t t-foreach="top" t-as="item">
+                                <li>
+                                    <strong t-esc="item.code"/> — <t t-esc="item.title"/>
+                                    (<t t-esc="item.severity"/>)
+                                    <div t-esc="item.recommendation"/>
+                                </li>
+                            </t>
+                        </ol>
+
+                        <h3>Detailed findings</h3>
+                        <t t-foreach="doc.get_non_passed_results()" t-as="item">
+                            <h4>
+                                <t t-esc="item.code"/> — <t t-esc="item.title"/>
+                                · <t t-esc="item.status"/> · <t t-esc="item.severity"/>
+                            </h4>
+                            <p><strong>What was found.</strong> <t t-esc="item.found"/></p>
+                            <p><strong>Why it matters.</strong> <t t-esc="item.why"/></p>
+                            <p><strong>Recommendation.</strong> <t t-esc="item.recommendation"/></p>
+                            <p class="shc-muted" t-if="item.affected_count">
+                                Affected records: <t t-esc="item.affected_count"/>
+                                <t t-if="item.affected_model"> on <t t-esc="item.affected_model"/></t>
+                            </p>
+                            <p class="shc-muted" t-if="item.reference">Reference: <t t-esc="item.reference"/></p>
+                        </t>
+
+                        <h3>Passed checks</h3>
+                        <ul>
+                            <t t-foreach="doc.get_passed_results()" t-as="item">
+                                <li><t t-esc="item.code"/> — <t t-esc="item.title"/></li>
+                            </t>
+                        </ul>
+
+                        <h3>Disabled checks</h3>
+                        <t t-set="disabled" t-value="doc.get_disabled_checks()"/>
+                        <t t-if="not disabled">
+                            <p>None.</p>
+                        </t>
+                        <ul t-else="">
+                            <t t-foreach="disabled" t-as="chk">
+                                <li>
+                                    <t t-esc="chk.code"/> — <t t-esc="chk.title"/>
+                                    <t t-if="chk.note"> · <t t-esc="chk.note"/></t>
+                                </li>
+                            </t>
+                        </ul>
+
+                        <h3>Accepted risks</h3>
+                        <t t-set="risks" t-value="doc.get_accepted_risks()"/>
+                        <t t-if="not risks">
+                            <p>None.</p>
+                        </t>
+                        <table t-else="" class="shc-table">
+                            <tr>
+                                <th>Check</th>
+                                <th>Justification</th>
+                                <th>Accepted by</th>
+                                <th>Review date</th>
+                            </tr>
+                            <t t-foreach="risks" t-as="risk">
+                                <tr>
+                                    <td><t t-esc="risk.code"/></td>
+                                    <td><t t-esc="risk.justification"/></td>
+                                    <td><t t-esc="risk.user_id.name"/></td>
+                                    <td><t t-esc="risk.expiry_date or '-'"/></td>
+                                </tr>
+                            </t>
+                        </table>
+
+                        <h3>Methodology</h3>
+                        <div t-field="doc.methodology_note"/>
+                        <p class="shc-muted">
+                            This document contains no passwords, API key values, tokens, master passwords or hashes.
+                            Identifiers, names and counts only.
+                            Support-version data is bundled in the module (table date is listed in CFG-11 / CFG-12).
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

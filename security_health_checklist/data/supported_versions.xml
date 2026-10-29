@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 Arif N Ramadhan (https://www.niits.id)
+    License OPL-1 (Odoo Proprietary License v1.0)
+-->
+<odoo noupdate="1">
+    <record id="param_supported_versions" model="ir.config_parameter">
+        <field name="key">shc.supported_versions</field>
+        <field name="value">{ "table_date": "2026-10-29", "odoo": { "16.0": { "eol": "2025-10-01" }, "17.0": { "eol": "2026-11-07" }, "18.0": { "eol": "2027-10-01" } }, "python": { "3.10": { "eol": "2026-10-04" }, "3.11": { "eol": "2027-10-24" }, "3.12": { "eol": "2028-10-31" }, "3.13": { "eol": "2029-10-31" } } }</field>
+    </record>
+    <record id="param_admin_threshold" model="ir.config_parameter">
+        <field name="key">shc.admin_threshold</field>
+        <field name="value">3</field>
+    </record>
+    <record id="param_dormant_days" model="ir.config_parameter">
+        <field name="key">shc.dormant_days</field>
+        <field name="value">90</field>
+    </record>
+    <record id="param_api_key_max_age" model="ir.config_parameter">
+        <field name="key">shc.api_key_max_age_days</field>
+        <field name="value">180</field>
+    </record>
+    <record id="param_retention_months" model="ir.config_parameter">
+        <field name="key">shc.retention_months</field>
+        <field name="value">0</field>
+    </record>
+    <record id="param_bruteforce_modules" model="ir.config_parameter">
+        <field name="key">shc.bruteforce_modules</field>
+        <field name="value">auth_brute_force,auth_signup_verify_email,password_security</field>
+    </record>
+</odoo>

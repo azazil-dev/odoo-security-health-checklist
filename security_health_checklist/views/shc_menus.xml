@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 Arif N Ramadhan (https://www.niits.id)
+    License OPL-1 (Odoo Proprietary License v1.0)
+-->
+<odoo>
+    <menuitem id="menu_shc_root"
+              name="Security Healthcheck"
+              groups="base.group_system"
+              web_icon="security_health_checklist,static/description/icon.png"
+              sequence="65"/>
+
+    <menuitem id="menu_shc_run"
+              name="Run healthcheck"
+              parent="menu_shc_root"
+              action="action_shc_run_wizard"
+              groups="base.group_system"
+              sequence="10"/>
+
+    <menuitem id="menu_shc_history"
+              name="History"
+              parent="menu_shc_root"
+              action="action_shc_scan"
+              groups="base.group_system"
+              sequence="20"/>
+
+    <menuitem id="menu_shc_config"
+              name="Configuration"
+              parent="menu_shc_root"
+              groups="base.group_system"
+              sequence="90"/>
+
+    <menuitem id="menu_shc_checks"
+              name="Checks"
+              parent="menu_shc_config"
+              action="action_shc_check_config"
+              groups="base.group_system"
+              sequence="10"/>
+
+    <menuitem id="menu_shc_accepted"
+              name="Accepted risks"
+              parent="menu_shc_config"
+              action="action_shc_accepted_risk"
+              groups="base.group_system"
+              sequence="20"/>
+
+    <menuitem id="menu_shc_settings"
+              name="Settings"
+              parent="menu_shc_config"
+              action="action_shc_settings"
+              groups="base.group_system"
+              sequence="30"/>
+</odoo>

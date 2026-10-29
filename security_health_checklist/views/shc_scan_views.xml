@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 Arif N Ramadhan (https://www.niits.id)
+    License OPL-1 (Odoo Proprietary License v1.0)
+-->
+<odoo>
+    <record id="view_shc_scan_tree" model="ir.ui.view">
+        <field name="name">shc.scan.tree</field>
+        <field name="model">shc.scan</field>
+        <field name="arch" type="xml">
+            <tree string="Scans" decoration-danger="grade in ('E','F')" decoration-warning="grade in ('C','D')" decoration-success="grade in ('A','B')">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="user_id"/>
+                <field name="score" widget="progressbar"/>
+                <field name="grade"/>
+                <field name="score_delta"/>
+                <field name="count_critical"/>
+                <field name="count_high"/>
+                <field name="count_medium"/>
+                <field name="count_low"/>
+                <field name="state" widget="badge" decoration-success="state == 'done'" decoration-info="state == 'running'" decoration-danger="state == 'failed'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_shc_scan_form" model="ir.ui.view">
+        <field name="name">shc.scan.form</field>
+        <field name="model">shc.scan</field>
+        <field name="arch" type="xml">
+            <form string="Healthcheck" class="shc_scan_form">
+                <header>
+                    <button name="action_print" type="object" string="Print" class="btn-primary" invisible="state != 'done'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="running,done,failed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-times-circle" disabled="1">
+                            <field name="count_critical" widget="statinfo" string="Critical"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-exclamation-triangle" disabled="1">
+                            <field name="count_high" widget="statinfo" string="High"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-exclamation-circle" disabled="1">
+                            <field name="count_medium" widget="statinfo" string="Medium"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-info-circle" disabled="1">
+                            <field name="count_low" widget="statinfo" string="Low"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <span class="o_form_label">Scan</span>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <div class="row shc_dashboard mb-3">
+                        <div class="col-md-4 text-center">
+                            <div class="shc_score_wrap">
+                                <div class="shc_score"><field name="score" widget="float" digits="[3,1]"/></div>
+                                <div class="text-muted">Score out of 100</div>
+                            </div>
+                            <field name="grade" widget="badge"
+                                   decoration-success="grade in ('A','B')"
+                                   decoration-warning="grade == 'C'"
+                                   decoration-danger="grade in ('D','E','F')"/>
+                            <div class="text-muted" invisible="not capped">Grade capped at C because a critical check failed.</div>
+                        </div>
+                        <div class="col-md-8">
+                            <field name="area_score_ids" nolabel="1" colspan="2">
+                                <tree decoration-muted="is_na" decoration-success="grade in ('A','B')" decoration-warning="grade == 'C'" decoration-danger="grade in ('D','E','F')">
+                                    <field name="area"/>
+                                    <field name="score" widget="progressbar"/>
+                                    <field name="grade"/>
+                                    <field name="weight"/>
+                                    <field name="is_na" optional="hide"/>
+                                </tree>
+                            </field>
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="user_id"/>
+                            <field name="duration"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="odoo_version"/>
+                            <field name="odoo_edition"/>
+                            <field name="environment"/>
+                            <field name="previous_scan_id"/>
+                            <field name="score_delta"/>
+                            <field name="capped" invisible="not capped"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Findings" name="findings">
+                            <field name="finding_ids" nolabel="1" context="{'tree_view_ref': 'security_health_checklist.view_shc_scan_result_tree'}">
+                                <tree decoration-danger="status == 'failed' and severity in ('critical','high')"
+                                      decoration-warning="status in ('warning','failed') and severity in ('medium','low')"
+                                      decoration-muted="status in ('accepted','error','na')"
+                                      decoration-info="status == 'passed'">
+                                    <field name="code"/>
+                                    <field name="title"/>
+                                    <field name="area"/>
+                                    <field name="severity" widget="badge"
+                                           decoration-danger="severity == 'critical'"
+                                           decoration-warning="severity == 'high'"
+                                           decoration-info="severity == 'medium'"/>
+                                    <field name="status" widget="badge"
+                                           decoration-success="status == 'passed'"
+                                           decoration-danger="status == 'failed'"
+                                           decoration-warning="status == 'warning'"/>
+                                    <field name="affected_count"/>
+                                    <button name="action_open_affected" type="object" string="Open records" icon="fa-external-link" invisible="not show_affected"/>
+                                    <field name="show_affected" column_invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="All checks" name="all_checks">
+                            <field name="result_ids" nolabel="1">
+                                <tree>
+                                    <field name="code"/>
+                                    <field name="title"/>
+                                    <field name="area"/>
+                                    <field name="severity"/>
+                                    <field name="status"/>
+                                    <field name="penalty" optional="hide"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Compared with previous" name="compare">
+                            <group>
+                                <field name="new_finding_codes"/>
+                                <field name="resolved_finding_codes"/>
+                            </group>
+                            <p class="text-muted">
+                                Newly introduced findings are checks that failed or warned on this scan but not on the previous one.
+                                Resolved findings went the other way.
+                            </p>
+                        </page>
+                        <page string="Methodology" name="method">
+                            <field name="methodology_note" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_shc_scan_search" model="ir.ui.view">
+        <field name="name">shc.scan.search</field>
+        <field name="model">shc.scan</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="grade"/>
+                <filter string="Grade A" name="grade_a" domain="[('grade', '=', 'A')]"/>
+                <filter string="Grade B" name="grade_b" domain="[('grade', '=', 'B')]"/>
+                <filter string="Grade C" name="grade_c" domain="[('grade', '=', 'C')]"/>
+                <filter string="Grade D–F" name="grade_low" domain="[('grade', 'in', ['D','E','F'])]"/>
+                <separator/>
+                <filter string="This month" name="this_month" domain="[('date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d'))]"/>
+                <group>
+                    <filter string="Month" name="group_month" context="{'group_by': 'date:month'}"/>
+                    <filter string="Grade" name="group_grade" context="{'group_by': 'grade'}"/>
+                    <filter string="User" name="group_user" context="{'group_by': 'user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_shc_scan_graph" model="ir.ui.view">
+        <field name="name">shc.scan.graph</field>
+        <field name="model">shc.scan</field>
+        <field name="arch" type="xml">
+            <graph string="Score trend" type="line">
+                <field name="date" interval="day"/>
+                <field name="score" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_shc_scan_pivot" model="ir.ui.view">
+        <field name="name">shc.scan.pivot</field>
+        <field name="model">shc.scan</field>
+        <field name="arch" type="xml">
+            <pivot string="Scans by grade">
+                <field name="grade" type="row"/>
+                <field name="date" interval="month" type="col"/>
+                <field name="score" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_shc_scan" model="ir.actions.act_window">
+        <field name="name">History</field>
+        <field name="res_model">shc.scan</field>
+        <field name="view_mode">tree,form,graph,pivot</field>
+        <field name="context">{'search_default_this_month': 0}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No scans yet</p>
+            <p>Run a healthcheck from the menu to create the first scan.</p>
+        </field>
+    </record>
+</odoo>

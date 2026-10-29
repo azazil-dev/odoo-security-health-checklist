@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 Arif N Ramadhan (https://www.niits.id)
+    License OPL-1 (Odoo Proprietary License v1.0)
+-->
+<odoo>
+    <record id="view_shc_scan_result_tree" model="ir.ui.view">
+        <field name="name">shc.scan.result.tree</field>
+        <field name="model">shc.scan.result</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="code"/>
+                <field name="title"/>
+                <field name="area"/>
+                <field name="severity"/>
+                <field name="status"/>
+                <field name="scan_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_shc_scan_result_form" model="ir.ui.view">
+        <field name="name">shc.scan.result.form</field>
+        <field name="model">shc.scan.result</field>
+        <field name="arch" type="xml">
+            <form string="Finding">
+                <header>
+                    <button name="action_open_affected" type="object" string="Open affected records" class="btn-primary" invisible="not show_affected"/>
+                    <button name="action_accept_risk" type="object" string="Accept risk" class="btn-secondary" invisible="status in ('passed','na','accepted')"/>
+                    <field name="show_affected" invisible="1"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="title"/></h1>
+                        <h2><field name="code"/></h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="area"/>
+                            <field name="severity" widget="badge"/>
+                            <field name="status" widget="badge"/>
+                        </group>
+                        <group>
+                            <field name="scan_id"/>
+                            <field name="affected_count"/>
+                            <field name="reference"/>
+                            <field name="penalty"/>
+                        </group>
+                    </group>
+                    <group string="What was found">
+                        <field name="found" nolabel="1" colspan="2"/>
+                    </group>
+                    <group string="Why it matters">
+                        <field name="why" nolabel="1" colspan="2"/>
+                    </group>
+                    <group string="Recommendation">
+                        <field name="recommendation" nolabel="1" colspan="2"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_shc_scan_result_search" model="ir.ui.view">
+        <field name="name">shc.scan.result.search</field>
+        <field name="model">shc.scan.result</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code"/>
+                <field name="title"/>
+                <filter string="Not passed" name="non_passed" domain="[('status', 'not in', ['passed','na'])]"/>
+                <filter string="Failed" name="failed" domain="[('status', '=', 'failed')]"/>
+                <filter string="Warning" name="warning" domain="[('status', '=', 'warning')]"/>
+                <separator/>
+                <filter string="Critical" name="sev_critical" domain="[('severity', '=', 'critical')]"/>
+                <filter string="High" name="sev_high" domain="[('severity', '=', 'high')]"/>
+                <group>
+                    <filter string="Area" name="group_area" context="{'group_by': 'area'}"/>
+                    <filter string="Severity" name="group_sev" context="{'group_by': 'severity'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_shc_accept_risk_wizard_form" model="ir.ui.view">
+        <field name="name">shc.accept.risk.wizard.form</field>
+        <field name="model">shc.accept.risk.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Accept risk">
+                <sheet>
+                    <group>
+                        <field name="result_id" invisible="1"/>
+                        <field name="code"/>
+                        <field name="title"/>
+                        <field name="justification" placeholder="Explain why this finding is accepted and who approved it."/>
+                        <field name="expiry_date"/>
+                        <field name="apply_to_check"/>
+                    </group>
+                    <p class="text-muted">
+                        Accepted findings are listed in the PDF with this justification and are excluded from the score.
+                    </p>
+                </sheet>
+                <footer>
+                    <button name="action_confirm" type="object" string="Accept risk" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

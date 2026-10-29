@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 Arif N Ramadhan (https://www.niits.id)
+    License OPL-1 (Odoo Proprietary License v1.0)
+-->
+<odoo>
+    <record id="module_category_shc" model="ir.module.category">
+        <field name="name">Security Healthcheck</field>
+        <field name="description">Read-only security and health assessment</field>
+        <field name="sequence">80</field>
+    </record>
+
+    <record id="shc_scan_company_rule" model="ir.rule">
+        <field name="name">SHC scan: allowed companies</field>
+        <field name="model_id" ref="model_shc_scan"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+</odoo>

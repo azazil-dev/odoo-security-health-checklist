@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 Arif N Ramadhan (https://www.niits.id)
+    License OPL-1 (Odoo Proprietary License v1.0)
+-->
+<odoo>
+    <record id="action_report_shc_scan" model="ir.actions.report">
+        <field name="name">Security Healthcheck</field>
+        <field name="model">shc.scan</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">security_health_checklist.report_shc_scan</field>
+        <field name="report_file">security_health_checklist.report_shc_scan</field>
+        <field name="print_report_name">'Healthcheck - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_shc_scan"/>
+        <field name="binding_type">report</field>
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+</odoo>
