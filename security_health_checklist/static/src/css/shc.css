@@ -1,15 +1,223 @@
 /* Copyright (C) 2026 Arif N Ramadhan — OPL-1 */
 
-.shc_scan_form .shc_score {
-    font-size: 48px;
+/* Global container styling */
+.shc_scan_form .shc_dashboard_container {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.shc_card_label {
+    font-size: 11px;
     font-weight: 700;
-    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #64748b;
+    margin-bottom: 10px;
 }
 
-.shc_scan_form .shc_score_wrap {
-    padding: 12px 0 8px;
+/* Hero Score Box */
+.shc_hero_card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
 }
 
-.shc_scan_form .shc_dashboard .o_field_badge {
-    font-size: 18px;
+.shc_hero_score_ring {
+    display: inline-flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 4px;
 }
+
+.shc_hero_score_val {
+    font-size: 52px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: #0f172a;
+    line-height: 1;
+}
+
+.shc_hero_score_max {
+    font-size: 16px;
+    font-weight: 600;
+    color: #94a3b8;
+}
+
+.shc_hero_grade .badge {
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    padding: 6px 18px !important;
+    border-radius: 20px !important;
+    letter-spacing: 0.5px;
+}
+
+.shc_hero_cap_warning {
+    margin-top: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #dc2626;
+    background: #fef2f2;
+    border: 1px solid #fee2e2;
+    padding: 4px 10px;
+    border-radius: 6px;
+    line-height: 1.3;
+}
+
+/* Meta Card */
+.shc_meta_card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 18px 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.shc_meta_item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px dashed #f1f5f9;
+    font-size: 13px;
+}
+
+.shc_meta_item:last-child {
+    border-bottom: none;
+}
+
+.shc_meta_key {
+    color: #64748b;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.shc_meta_val {
+    font-weight: 600;
+    color: #1e293b;
+    text-align: right;
+}
+
+/* Stat Metric Cards */
+.shc_stat_card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px 14px;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    border-left: 4px solid #94a3b8;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.shc_stat_card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px -1px rgba(0, 0, 0, 0.06);
+}
+
+.shc_stat_critical {
+    border-left-color: #ef4444;
+}
+
+.shc_stat_critical .shc_stat_num {
+    color: #ef4444;
+}
+
+.shc_stat_high {
+    border-left-color: #f97316;
+}
+
+.shc_stat_high .shc_stat_num {
+    color: #f97316;
+}
+
+.shc_stat_medium {
+    border-left-color: #f59e0b;
+}
+
+.shc_stat_medium .shc_stat_num {
+    color: #f59e0b;
+}
+
+.shc_stat_low {
+    border-left-color: #3b82f6;
+}
+
+.shc_stat_low .shc_stat_num {
+    color: #3b82f6;
+}
+
+.shc_stat_title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #475569;
+}
+
+.shc_stat_num {
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.shc_stat_subtext {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 4px;
+}
+
+/* Area Breakdown Table inside Dashboard */
+.shc_areas_card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.shc_areas_card .o_list_table {
+    margin-bottom: 0;
+    font-size: 13px;
+}
+
+.shc_areas_card thead th {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+    border-top: none;
+    border-bottom: 1px solid #e2e8f0;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+/* Findings List View Badges */
+.shc_scan_form .o_list_table {
+    font-size: 13px;
+}
+
+.shc_scan_form .badge {
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-weight: 600;
+}
+
+

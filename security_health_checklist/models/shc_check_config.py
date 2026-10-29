@@ -29,9 +29,10 @@ class ShcCheckConfig(models.Model):
     active = fields.Boolean(default=True)
     note = fields.Text()
 
-    _sql_constraints = [
-        ('code_unique', 'unique(code)', 'Check code must be unique.'),
-    ]
+    _code_unique = models.Constraint(
+        'unique(code)',
+        'Check code must be unique.'
+    )
 
     @api.model
     def _sync_from_registry(self):

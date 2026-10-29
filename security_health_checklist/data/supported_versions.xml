@@ -6,7 +6,7 @@
 <odoo noupdate="1">
     <record id="param_supported_versions" model="ir.config_parameter">
         <field name="key">shc.supported_versions</field>
-        <field name="value">{ "table_date": "2026-10-29", "odoo": { "16.0": { "eol": "2025-10-01" }, "17.0": { "eol": "2026-11-07" }, "18.0": { "eol": "2027-10-01" } }, "python": { "3.10": { "eol": "2026-10-04" }, "3.11": { "eol": "2027-10-24" }, "3.12": { "eol": "2028-10-31" }, "3.13": { "eol": "2029-10-31" } } }</field>
+        <field name="value">{ "table_date": "2026-10-29", "odoo": { "17.0": { "eol": "2026-11-07" }, "18.0": { "eol": "2027-10-01" }, "19.0": { "eol": "2028-10-01" } }, "python": { "3.10": { "eol": "2026-10-04" }, "3.11": { "eol": "2027-10-24" }, "3.12": { "eol": "2028-10-31" }, "3.13": { "eol": "2029-10-31" } } }</field>
     </record>
     <record id="param_admin_threshold" model="ir.config_parameter">
         <field name="key">shc.admin_threshold</field>

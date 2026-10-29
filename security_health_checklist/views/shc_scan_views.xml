@@ -9,16 +9,22 @@
         <field name="model">shc.scan</field>
         <field name="arch" type="xml">
             <list string="Scans" decoration-danger="grade in ('E','F')" decoration-warning="grade in ('C','D')" decoration-success="grade in ('A','B')">
-                <field name="name"/>
+                <field name="name" decoration-bf="1"/>
                 <field name="date"/>
-                <field name="user_id"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
                 <field name="score" widget="progressbar"/>
-                <field name="grade"/>
-                <field name="score_delta"/>
-                <field name="count_critical"/>
-                <field name="count_high"/>
-                <field name="count_medium"/>
-                <field name="count_low"/>
+                <field name="grade" widget="badge"
+                       decoration-success="grade in ('A','B')"
+                       decoration-warning="grade == 'C'"
+                       decoration-danger="grade in ('D','E','F')"/>
+                <field name="score_delta" widget="badge"
+                       decoration-success="score_delta &gt; 0"
+                       decoration-danger="score_delta &lt; 0"
+                       decoration-muted="score_delta == 0"/>
+                <field name="count_critical" decoration-danger="count_critical &gt; 0" optional="show"/>
+                <field name="count_high" decoration-warning="count_high &gt; 0" optional="show"/>
+                <field name="count_medium" optional="hide"/>
+                <field name="count_low" optional="hide"/>
                 <field name="state" widget="badge" decoration-success="state == 'done'" decoration-info="state == 'running'" decoration-danger="state == 'failed'"/>
             </list>
         </field>
@@ -35,60 +41,137 @@
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" icon="fa-times-circle" disabled="1">
-                            <field name="count_critical" widget="statinfo" string="Critical"/>
-                        </button>
-                        <button class="oe_stat_button" icon="fa-exclamation-triangle" disabled="1">
-                            <field name="count_high" widget="statinfo" string="High"/>
-                        </button>
-                        <button class="oe_stat_button" icon="fa-exclamation-circle" disabled="1">
-                            <field name="count_medium" widget="statinfo" string="Medium"/>
-                        </button>
-                        <button class="oe_stat_button" icon="fa-info-circle" disabled="1">
-                            <field name="count_low" widget="statinfo" string="Low"/>
-                        </button>
                     </div>
                     <div class="oe_title">
                         <span class="o_form_label">Scan</span>
                         <h1><field name="name"/></h1>
                     </div>
-                    <div class="row shc_dashboard mb-3">
-                        <div class="col-md-4 text-center">
-                            <div class="shc_score_wrap">
-                                <div class="shc_score"><field name="score" widget="float" digits="[3,1]"/></div>
-                                <div class="text-muted">Score out of 100</div>
+                    <div class="shc_dashboard_container mb-4">
+                        <!-- Top Summary Row: Score, Trend/Delta, Severity Counts -->
+                        <div class="row g-3 align-items-stretch">
+                            <!-- Overall Score Card -->
+                            <div class="col-lg-3 col-md-6 col-12">
+                                <div class="shc_hero_card">
+                                    <div class="shc_card_label">Overall Security Score</div>
+                                    <div class="shc_hero_score_ring">
+                                        <span class="shc_hero_score_val"><field name="score" widget="float" digits="[3,1]"/></span>
+                                        <span class="shc_hero_score_max">/100</span>
+                                    </div>
+                                    <div class="shc_hero_grade mt-2">
+                                        <field name="grade" widget="badge"
+                                               decoration-success="grade in ('A','B')"
+                                               decoration-warning="grade == 'C'"
+                                               decoration-danger="grade in ('D','E','F')"/>
+                                    </div>
+                                    <div class="shc_hero_cap_warning" invisible="not capped">
+                                        <i class="fa fa-shield me-1"/>Capped at C (Critical Failed)
+                                    </div>
+                                </div>
                             </div>
-                            <field name="grade" widget="badge"
-                                   decoration-success="grade in ('A','B')"
-                                   decoration-warning="grade == 'C'"
-                                   decoration-danger="grade in ('D','E','F')"/>
-                            <div class="text-muted" invisible="not capped">Grade capped at C because a critical check failed.</div>
+
+                            <!-- Scan Meta Info Card -->
+                            <div class="col-lg-3 col-md-6 col-12">
+                                <div class="shc_meta_card">
+                                    <div class="shc_card_label">Scan Summary</div>
+                                    <div class="shc_meta_item">
+                                        <span class="shc_meta_key"><i class="fa fa-calendar me-1"/>Date:</span>
+                                        <span class="shc_meta_val"><field name="date"/></span>
+                                    </div>
+                                    <div class="shc_meta_item">
+                                        <span class="shc_meta_key"><i class="fa fa-user me-1"/>Inspector:</span>
+                                        <span class="shc_meta_val"><field name="user_id" widget="many2one_avatar_user"/></span>
+                                    </div>
+                                    <div class="shc_meta_item">
+                                        <span class="shc_meta_key"><i class="fa fa-server me-1"/>Platform:</span>
+                                        <span class="shc_meta_val"><field name="odoo_version"/> (<field name="odoo_edition"/>)</span>
+                                    </div>
+                                    <div class="shc_meta_item">
+                                        <span class="shc_meta_key"><i class="fa fa-line-chart me-1"/>Score Delta:</span>
+                                        <span class="shc_meta_val">
+                                            <field name="score_delta" widget="badge"
+                                                   decoration-success="score_delta &gt; 0"
+                                                   decoration-danger="score_delta &lt; 0"
+                                                   decoration-muted="score_delta == 0"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Severity Breakdown KPI Cards (2x2 Grid) -->
+                            <div class="col-lg-6 col-md-12 col-12">
+                                <div class="row g-2 h-100">
+                                    <div class="col-sm-6 col-12">
+                                        <div class="shc_stat_card shc_stat_critical h-100">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="shc_stat_title"><i class="fa fa-times-circle me-1"/>Critical Findings</div>
+                                                <div class="shc_stat_num"><field name="count_critical"/></div>
+                                            </div>
+                                            <div class="shc_stat_subtext">Urgent vulnerabilities requiring immediate fix</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        <div class="shc_stat_card shc_stat_high h-100">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="shc_stat_title"><i class="fa fa-exclamation-triangle me-1"/>High Risk</div>
+                                                <div class="shc_stat_num"><field name="count_high"/></div>
+                                            </div>
+                                            <div class="shc_stat_subtext">Significant security flaws or policy violations</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        <div class="shc_stat_card shc_stat_medium h-100">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="shc_stat_title"><i class="fa fa-exclamation-circle me-1"/>Medium Risk</div>
+                                                <div class="shc_stat_num"><field name="count_medium"/></div>
+                                            </div>
+                                            <div class="shc_stat_subtext">Best practice and hardening opportunities</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        <div class="shc_stat_card shc_stat_low h-100">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="shc_stat_title"><i class="fa fa-info-circle me-1"/>Low / Info</div>
+                                                <div class="shc_stat_num"><field name="count_low"/></div>
+                                            </div>
+                                            <div class="shc_stat_subtext">Minor optimizations and general insights</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-8">
-                            <field name="area_score_ids" nolabel="1" colspan="2">
-                                <list decoration-muted="is_na" decoration-success="grade in ('A','B')" decoration-warning="grade == 'C'" decoration-danger="grade in ('D','E','F')">
-                                    <field name="area"/>
-                                    <field name="score" widget="progressbar"/>
-                                    <field name="grade"/>
-                                    <field name="weight"/>
-                                    <field name="is_na" optional="hide"/>
-                                </list>
-                            </field>
+
+                        <!-- Areas Progress Breakdown Row -->
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <div class="shc_areas_card">
+                                    <div class="d-flex justify-content-between align-items-center mb-2 px-1">
+                                        <div class="shc_card_label mb-0">Domain Security Breakdown</div>
+                                        <div class="text-muted small"><i class="fa fa-info-circle me-1"/>Weighted performance per evaluation pillar</div>
+                                    </div>
+                                    <field name="area_score_ids" nolabel="1">
+                                        <list decoration-muted="is_na" decoration-success="grade in ('A','B')" decoration-warning="grade == 'C'" decoration-danger="grade in ('D','E','F')">
+                                            <field name="area" string="Evaluation Domain"/>
+                                            <field name="score" widget="progressbar" string="Score (%)"/>
+                                            <field name="grade" widget="badge" string="Grade"
+                                                   decoration-success="grade in ('A','B')"
+                                                   decoration-warning="grade == 'C'"
+                                                   decoration-danger="grade in ('D','E','F')"/>
+                                            <field name="weight" widget="float" digits="[2,2]" string="Impact Weight"/>
+                                            <field name="is_na" optional="hide"/>
+                                        </list>
+                                    </field>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <group>
+                    <group string="Audit &amp; Environment Details" class="mt-2">
                         <group>
-                            <field name="date"/>
-                            <field name="user_id"/>
-                            <field name="duration"/>
                             <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="duration" string="Scan Duration (seconds)"/>
                         </group>
                         <group>
-                            <field name="odoo_version"/>
-                            <field name="odoo_edition"/>
                             <field name="environment"/>
                             <field name="previous_scan_id"/>
-                            <field name="score_delta"/>
                             <field name="capped" invisible="not capped"/>
                         </group>
                     </group>

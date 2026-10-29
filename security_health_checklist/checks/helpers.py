@@ -45,8 +45,9 @@ def get_settings_users(env):
     group = env.ref('base.group_system', raise_if_not_found=False)
     if not group:
         return env['res.users']
+    field_name = 'group_ids' if 'group_ids' in env['res.users']._fields else 'groups_id'
     return env['res.users'].sudo().search([
-        ('groups_id', 'in', [group.id]),
+        (field_name, 'in', [group.id]),
         ('share', '=', False),
         ('active', '=', True),
     ])

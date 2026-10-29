@@ -6,12 +6,12 @@
     'name': 'Security Healthcheck',
     'summary': 'Security and health score, grade and PDF report for your Odoo instance',
     'description': """
-Run a read-only security and health assessment of your Odoo 18 instance.
+Run a read-only security and health assessment of your Odoo 19 instance.
 You get a score from 0 to 100, a grade from A to F, findings in plain language
 and a branded PDF report. The scan never changes settings, never guesses
 passwords and never calls the internet.
     """,
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'category': 'Administration',
     'author': 'Arif N Ramadhan',
     'website': 'https://www.niits.id',
