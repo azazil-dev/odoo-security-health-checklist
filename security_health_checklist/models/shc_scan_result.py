@@ -82,7 +82,7 @@ class ShcScanResult(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Affected records'),
             'res_model': self.affected_model,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('id', 'in', ids)],
             'target': 'current',
         }

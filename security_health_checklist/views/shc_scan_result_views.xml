@@ -4,18 +4,18 @@
     License OPL-1 (Odoo Proprietary License v1.0)
 -->
 <odoo>
-    <record id="view_shc_scan_result_tree" model="ir.ui.view">
-        <field name="name">shc.scan.result.tree</field>
+    <record id="view_shc_scan_result_list" model="ir.ui.view">
+        <field name="name">shc.scan.result.list</field>
         <field name="model">shc.scan.result</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="code"/>
                 <field name="title"/>
                 <field name="area"/>
                 <field name="severity"/>
                 <field name="status"/>
                 <field name="scan_id" optional="hide"/>
-            </tree>
+            </list>
         </field>
     </record>
 

@@ -4,11 +4,11 @@
     License OPL-1 (Odoo Proprietary License v1.0)
 -->
 <odoo>
-    <record id="view_shc_scan_tree" model="ir.ui.view">
-        <field name="name">shc.scan.tree</field>
+    <record id="view_shc_scan_list" model="ir.ui.view">
+        <field name="name">shc.scan.list</field>
         <field name="model">shc.scan</field>
         <field name="arch" type="xml">
-            <tree string="Scans" decoration-danger="grade in ('E','F')" decoration-warning="grade in ('C','D')" decoration-success="grade in ('A','B')">
+            <list string="Scans" decoration-danger="grade in ('E','F')" decoration-warning="grade in ('C','D')" decoration-success="grade in ('A','B')">
                 <field name="name"/>
                 <field name="date"/>
                 <field name="user_id"/>
@@ -20,7 +20,7 @@
                 <field name="count_medium"/>
                 <field name="count_low"/>
                 <field name="state" widget="badge" decoration-success="state == 'done'" decoration-info="state == 'running'" decoration-danger="state == 'failed'"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -66,13 +66,13 @@
                         </div>
                         <div class="col-md-8">
                             <field name="area_score_ids" nolabel="1" colspan="2">
-                                <tree decoration-muted="is_na" decoration-success="grade in ('A','B')" decoration-warning="grade == 'C'" decoration-danger="grade in ('D','E','F')">
+                                <list decoration-muted="is_na" decoration-success="grade in ('A','B')" decoration-warning="grade == 'C'" decoration-danger="grade in ('D','E','F')">
                                     <field name="area"/>
                                     <field name="score" widget="progressbar"/>
                                     <field name="grade"/>
                                     <field name="weight"/>
                                     <field name="is_na" optional="hide"/>
-                                </tree>
+                                </list>
                             </field>
                         </div>
                     </div>
@@ -94,8 +94,8 @@
                     </group>
                     <notebook>
                         <page string="Findings" name="findings">
-                            <field name="finding_ids" nolabel="1" context="{'tree_view_ref': 'security_health_checklist.view_shc_scan_result_tree'}">
-                                <tree decoration-danger="status == 'failed' and severity in ('critical','high')"
+                            <field name="finding_ids" nolabel="1" context="{'tree_view_ref': 'security_health_checklist.view_shc_scan_result_list', 'list_view_ref': 'security_health_checklist.view_shc_scan_result_list'}">
+                                <list decoration-danger="status == 'failed' and severity in ('critical','high')"
                                       decoration-warning="status in ('warning','failed') and severity in ('medium','low')"
                                       decoration-muted="status in ('accepted','error','na')"
                                       decoration-info="status == 'passed'">
@@ -113,19 +113,19 @@
                                     <field name="affected_count"/>
                                     <button name="action_open_affected" type="object" string="Open records" icon="fa-external-link" invisible="not show_affected"/>
                                     <field name="show_affected" column_invisible="1"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="All checks" name="all_checks">
                             <field name="result_ids" nolabel="1">
-                                <tree>
+                                <list>
                                     <field name="code"/>
                                     <field name="title"/>
                                     <field name="area"/>
                                     <field name="severity"/>
                                     <field name="status"/>
                                     <field name="penalty" optional="hide"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Compared with previous" name="compare">
@@ -201,7 +201,7 @@
     <record id="action_shc_scan" model="ir.actions.act_window">
         <field name="name">History</field>
         <field name="res_model">shc.scan</field>
-        <field name="view_mode">tree,form,graph,pivot</field>
+        <field name="view_mode">list,form,graph,pivot</field>
         <field name="context">{'search_default_this_month': 0}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">No scans yet</p>

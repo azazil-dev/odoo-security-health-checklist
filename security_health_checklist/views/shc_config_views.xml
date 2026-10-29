@@ -4,18 +4,18 @@
     License OPL-1 (Odoo Proprietary License v1.0)
 -->
 <odoo>
-    <record id="view_shc_check_config_tree" model="ir.ui.view">
-        <field name="name">shc.check.config.tree</field>
+    <record id="view_shc_check_config_list" model="ir.ui.view">
+        <field name="name">shc.check.config.list</field>
         <field name="model">shc.check.config</field>
         <field name="arch" type="xml">
-            <tree editable="bottom">
+            <list editable="bottom">
                 <field name="code"/>
                 <field name="title"/>
                 <field name="area"/>
                 <field name="severity"/>
                 <field name="active"/>
                 <field name="note"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -41,22 +41,22 @@
     <record id="action_shc_check_config" model="ir.actions.act_window">
         <field name="name">Checks</field>
         <field name="res_model">shc.check.config</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="context">{'active_test': False}</field>
     </record>
 
-    <record id="view_shc_accepted_risk_tree" model="ir.ui.view">
-        <field name="name">shc.accepted.risk.tree</field>
+    <record id="view_shc_accepted_risk_list" model="ir.ui.view">
+        <field name="name">shc.accepted.risk.list</field>
         <field name="model">shc.accepted.risk</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="code"/>
                 <field name="res_key"/>
                 <field name="justification"/>
                 <field name="user_id"/>
                 <field name="date"/>
                 <field name="expiry_date"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -83,7 +83,7 @@
     <record id="action_shc_accepted_risk" model="ir.actions.act_window">
         <field name="name">Accepted risks</field>
         <field name="res_model">shc.accepted.risk</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <record id="view_res_config_settings_shc" model="ir.ui.view">
