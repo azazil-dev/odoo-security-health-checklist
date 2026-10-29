@@ -43,6 +43,6 @@ passwords and never calls the internet.
     'installable': True,
     'auto_install': False,
     'post_init_hook': 'post_init_hook',
-    'price': 99.0,
+    'price': 0.0,
     'currency': 'EUR',
 }
